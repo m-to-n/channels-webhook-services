@@ -58,16 +58,10 @@ package:
 
 functions:
   hello:
-    handler: bin/hello
+    handler: bin/_version
     events:
       - httpApi:
-          path: /hello
-          method: get
-  world:
-    handler: bin/world
-    events:
-      - httpApi:
-          path: /world
+          path: /version
           method: get
   whatsapp-twilio:
     handler: bin/whatsapp-twilio

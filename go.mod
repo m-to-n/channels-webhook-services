@@ -1,4 +1,4 @@
-module m2n.com/channels-whatsapp
+module github.com/m-to-n/channels-webhook-services
 
 go 1.17
 

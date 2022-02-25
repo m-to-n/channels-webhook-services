@@ -9,6 +9,8 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
+const APP_VERSION = "m2n-channels-webhook-services-v0.1.0"
+
 // Response is of type APIGatewayProxyResponse since we're leveraging the
 // AWS Lambda Proxy Request functionality (default behavior)
 //
@@ -20,7 +22,7 @@ func Handler(ctx context.Context) (Response, error) {
 	var buf bytes.Buffer
 
 	body, err := json.Marshal(map[string]interface{}{
-		"message": "Go Serverless v1.0! Your function executed successfully!",
+		"message": APP_VERSION,
 	})
 	if err != nil {
 		return Response{StatusCode: 404}, err
@@ -32,8 +34,7 @@ func Handler(ctx context.Context) (Response, error) {
 		IsBase64Encoded: false,
 		Body:            buf.String(),
 		Headers: map[string]string{
-			"Content-Type":           "application/json",
-			"X-MyCompany-Func-Reply": "hello-handler",
+			"Content-Type": "application/json",
 		},
 	}
 
