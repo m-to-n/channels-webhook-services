@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/foo"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -21,7 +19,7 @@ func Handler(ctx context.Context) (Response, error) {
 	var buf bytes.Buffer
 
 	body, err := json.Marshal(map[string]interface{}{
-		"message": "Future WhatsApp webhook handler for Twilio provider running here!" + foo.Foo() + " " + foo.Bar(),
+		"message": "Future WhatsApp webhook handler for Twilio provider running here!",
 	})
 	if err != nil {
 		return Response{StatusCode: 404}, err

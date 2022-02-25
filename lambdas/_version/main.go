@@ -7,9 +7,8 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/m-to-n/channels-webhook-services/lambdas/_version/util"
 )
-
-const APP_VERSION = "m2n-channels-webhook-services-v0.1.0"
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
 // AWS Lambda Proxy Request functionality (default behavior)
@@ -22,7 +21,7 @@ func Handler(ctx context.Context) (Response, error) {
 	var buf bytes.Buffer
 
 	body, err := json.Marshal(map[string]interface{}{
-		"message": APP_VERSION,
+		"message": util.AppName() + "-" + util.AppVer(),
 	})
 	if err != nil {
 		return Response{StatusCode: 404}, err
