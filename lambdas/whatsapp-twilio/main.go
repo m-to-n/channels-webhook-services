@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
+	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"net/http"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -15,27 +15,38 @@ import (
 type Response events.APIGatewayProxyResponse
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(ctx context.Context) (Response, error) {
-	var buf bytes.Buffer
+func handlerGet(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Body:       "WA/Twilio webhook handler running here!",
+	}, nil
+}
 
-	body, err := json.Marshal(map[string]interface{}{
-		"message": "Future WhatsApp webhook handler for Twilio provider running here!",
-	})
-	if err != nil {
-		return Response{StatusCode: 404}, err
+func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Body:       "OK!",
+	}, nil
+}
+
+func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+	/**
+	req.HTTPMethod not populated for some reason. we need to check for body instead! :(
+
+	https://www.alexedwards.net/blog/serverless-api-with-go-and-aws-lambda
+	https://github.com/aws/aws-lambda-go/issues/179
+	https://www.bogotobogo.com/GoLang/GoLang_Serverless_WebAPI_with_AWS_Lambda.php
+	*/
+
+	fmt.Println("whatsapp-twilio lambda called " + req.Body)
+	fmt.Println("HTTPMethod: " + req.HTTPMethod)
+
+	if req.Body != "" {
+		return handlerPost(ctx, req)
+	} else {
+		return handlerGet(ctx, req)
 	}
-	json.HTMLEscape(&buf, body)
-
-	resp := Response{
-		StatusCode:      200,
-		IsBase64Encoded: false,
-		Body:            buf.String(),
-		Headers: map[string]string{
-			"Content-Type": "application/json",
-		},
-	}
-
-	return resp, nil
 }
 
 func main() {
