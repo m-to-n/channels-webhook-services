@@ -2,9 +2,13 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/data"
+	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/processing"
+	"github.com/m-to-n/channels-webhook-services/utils"
 	"net/http"
 )
 
@@ -23,9 +27,55 @@ func handlerGet(ctx context.Context, req events.APIGatewayProxyRequest) (events.
 }
 
 func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+
+	rawDecodedBytes, err := base64.StdEncoding.DecodeString(req.Body)
+
+	if err != nil {
+		return returnError("Error when decoding twilio payload", err, http.StatusBadRequest)
+	}
+
+	rawDecodedStr := string(rawDecodedBytes)
+
+	fmt.Println("rawDecodedStr " + rawDecodedStr)
+
+	paramsArr, err := utils.DecodeStringToParams(rawDecodedStr)
+
+	if err != nil {
+		return returnError("Error when parsing rawDecodedStr", err, http.StatusBadRequest)
+	}
+
+	twilioMessage := data.TwilioRequestFromArray(paramsArr)
+	prettyString, err := utils.StructToPrettyString(twilioMessage)
+
+	if err != nil {
+		return returnError("Error prettyString", err, http.StatusBadRequest)
+	}
+
+	fmt.Println("prettyString " + *prettyString)
+
+	//err = json.Unmarshal([]byte(req.Body), &twilioMessage)
+
+	if err != nil {
+		return returnError("Error when parsing twilio payload", err, http.StatusBadRequest)
+	}
+
+	err = processing.MessageHanler(&twilioMessage)
+	if err != nil {
+		return returnError("Error when processing twilio payload", err, http.StatusInternalServerError)
+	}
+
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
 		Body:       "OK!",
+	}, nil
+}
+
+func returnError(errorMsg string, err error, statusCode int) (events.APIGatewayProxyResponse, error) {
+	fmt.Println(errorMsg + ": " + err.Error())
+	fmt.Sprint(err)
+	return events.APIGatewayProxyResponse{
+		StatusCode: statusCode,
+		Body:       errorMsg,
 	}, nil
 }
 
@@ -41,6 +91,7 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 
 	fmt.Println("whatsapp-twilio lambda called " + req.Body)
 	fmt.Println("HTTPMethod: " + req.HTTPMethod)
+	fmt.Println("Headers: " + fmt.Sprint(req.Headers))
 
 	if req.Body != "" {
 		return handlerPost(ctx, req)

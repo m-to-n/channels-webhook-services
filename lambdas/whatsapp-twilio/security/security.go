@@ -23,6 +23,7 @@ https://www.twilio.com/docs/usage/webhooks/webhooks-security
 // This process is frequently error prone, especially if you are running behind
 // a proxy, or Twilio is making requests with a port in the URL.
 // See https://www.twilio.com/docs/security#validating-requests for more information
+
 func ValidateIncomingRequest(host string, authToken string, req *http.Request) (err error) {
 	err = req.ParseForm()
 	if err != nil {
