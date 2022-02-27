@@ -12,6 +12,7 @@ import (
 	"github.com/m-to-n/channels-webhook-services/utils"
 	"net/http"
 	"os"
+	"strings"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -61,10 +62,12 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 		return returnError("Error when parsing twilio payload", err, http.StatusBadRequest)
 	}
 
+	twilioAuthToken := os.Getenv("TWILIO_AUTH_TOKEN_" + strings.Split(twilioMessage.To, "+")[1]) // TBD: make more defensive :)
+
 	// TBD: we will have special service maintaining configs (like TWILIO_AUTH_TOKEN) in multi-tenant way. this if for initial testing only
 	err = security.ValidateIncomingRequest(
 		"https://"+req.Headers["host"],
-		os.Getenv("TWILIO_AUTH_TOKEN"),
+		twilioAuthToken,
 		"/whatsapp-twilio",
 		twilioMessage.ToUrlValues(),
 		req.Headers["x-twilio-signature"],
