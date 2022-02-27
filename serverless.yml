@@ -20,12 +20,13 @@ service: m2n-channels-webhook-services
 # Check out our docs for more details
 frameworkVersion: '3'
 
+custom: ${file(./secrets/secrets.yml)}
 provider:
   name: aws
   runtime: go1.x
   region: eu-central-1
   environment:
-    TWILIO_AUTH_TOKEN: xxxx
+    TWILIO_AUTH_TOKEN: ${self:custom.twilio_auth_token}
 
 # you can overwrite defaults here
 #  stage: dev

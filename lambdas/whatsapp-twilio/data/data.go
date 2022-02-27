@@ -46,7 +46,7 @@ func TwilioRequestFromArray(params []string) TwilioRequest {
 	}
 }
 
-func TwilioRequestToUrlValues(tr *TwilioRequest) url.Values {
+func (tr TwilioRequest) ToUrlValues() url.Values {
 	v := url.Values{}
 
 	v.Set("SmsMessageSid", tr.SmsMessageSid)

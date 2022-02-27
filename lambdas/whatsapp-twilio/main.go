@@ -66,7 +66,7 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 		"https://"+req.Headers["host"],
 		os.Getenv("TWILIO_AUTH_TOKEN"),
 		"/whatsapp-twilio",
-		data.TwilioRequestToUrlValues(&twilioMessage),
+		twilioMessage.ToUrlValues(),
 		req.Headers["x-twilio-signature"],
 	)
 
