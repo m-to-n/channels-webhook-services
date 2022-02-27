@@ -24,7 +24,7 @@ https://www.twilio.com/docs/usage/webhooks/webhooks-security
 // a proxy, or Twilio is making requests with a port in the URL.
 // See https://www.twilio.com/docs/security#validating-requests for more information
 
-func ValidateIncomingRequest(host string, authToken string, req *http.Request) (err error) {
+func ValidateIncomingRequestOrig(host string, authToken string, req *http.Request) (err error) {
 	err = req.ParseForm()
 	if err != nil {
 		return
@@ -32,6 +32,15 @@ func ValidateIncomingRequest(host string, authToken string, req *http.Request) (
 	err = validateIncomingRequest(host, authToken, req.URL.String(), req.Form, req.Header.Get("X-Twilio-Signature"))
 	if err != nil {
 		return
+	}
+
+	return
+}
+
+func ValidateIncomingRequest(host string, authToken string, URL string, postForm url.Values, xTwilioSignature string) (err error) {
+	err = validateIncomingRequest(host, authToken, URL, postForm, xTwilioSignature)
+	if err != nil {
+		return err
 	}
 
 	return

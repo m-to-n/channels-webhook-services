@@ -24,6 +24,8 @@ provider:
   name: aws
   runtime: go1.x
   region: eu-central-1
+  environment:
+    TWILIO_AUTH_TOKEN: xxxx
 
 # you can overwrite defaults here
 #  stage: dev

@@ -8,8 +8,10 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/data"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/processing"
+	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/security"
 	"github.com/m-to-n/channels-webhook-services/utils"
 	"net/http"
+	"os"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -57,6 +59,19 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 
 	if err != nil {
 		return returnError("Error when parsing twilio payload", err, http.StatusBadRequest)
+	}
+
+	// TBD: we will have special service maintaining configs (like TWILIO_AUTH_TOKEN) in multi-tenant way. this if for initial testing only
+	err = security.ValidateIncomingRequest(
+		"https://"+req.Headers["host"],
+		os.Getenv("TWILIO_AUTH_TOKEN"),
+		"/whatsapp-twilio",
+		data.TwilioRequestToUrlValues(&twilioMessage),
+		req.Headers["x-twilio-signature"],
+	)
+
+	if err != nil {
+		return returnError("Invalid security header", err, http.StatusBadRequest)
 	}
 
 	err = processing.MessageHanler(&twilioMessage)

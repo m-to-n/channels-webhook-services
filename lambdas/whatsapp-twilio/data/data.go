@@ -1,12 +1,16 @@
 package data
 
-import "strings"
+import (
+	"net/url"
+	"strings"
+)
 
 type TwilioRequest struct {
 	SmsMessageSid string `json:"SmsMessageSid"`
 	NumMedia      string `json:"NumMedia"`
 	ProfileName   string `json:"ProfileName"`
 	SmsSid        string `json:"SmsSid"`
+	WaId          string `json:"WaId"`
 	SmsStatus     string `json:"SmsStatus"`
 	Body          string `json:"Body"`
 	To            string `json:"To"`
@@ -30,6 +34,7 @@ func TwilioRequestFromArray(params []string) TwilioRequest {
 		NumMedia:      m["NumMedia"],
 		ProfileName:   m["ProfileName"],
 		SmsSid:        m["SmsSid"],
+		WaId:          m["WaId"],
 		SmsStatus:     m["SmsStatus"],
 		Body:          m["Body"],
 		To:            m["To"],
@@ -39,6 +44,26 @@ func TwilioRequestFromArray(params []string) TwilioRequest {
 		From:          m["From"],
 		ApiVersion:    m["ApiVersion"],
 	}
+}
+
+func TwilioRequestToUrlValues(tr *TwilioRequest) url.Values {
+	v := url.Values{}
+
+	v.Set("SmsMessageSid", tr.SmsMessageSid)
+	v.Set("NumMedia", tr.NumMedia)
+	v.Set("ProfileName", tr.ProfileName)
+	v.Set("SmsSid", tr.SmsSid)
+	v.Set("WaId", tr.WaId)
+	v.Set("SmsStatus", tr.SmsStatus)
+	v.Set("Body", tr.Body)
+	v.Set("To", tr.To)
+	v.Set("NumSegments", tr.NumSegments)
+	v.Set("MessageSid", tr.MessageSid)
+	v.Set("AccountSid", tr.AccountSid)
+	v.Set("From", tr.From)
+	v.Set("ApiVersion", tr.ApiVersion)
+
+	return v
 }
 
 type TwilioRequestValidationData struct {
