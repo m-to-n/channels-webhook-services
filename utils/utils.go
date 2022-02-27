@@ -27,11 +27,16 @@ func StructToString(structure interface{}) (*string, error) {
 }
 
 func DecodeStringToParams(str string) ([]string, error) {
-	value, err := url.QueryUnescape(str)
-	if nil != err {
-		return nil, err
+
+	var final []string
+
+	for _, s := range strings.Split(str, "&") {
+		value, err := url.QueryUnescape(s)
+		if nil != err {
+			return nil, err
+		}
+		final = append(final, value)
 	}
 
-	return strings.Split(value, "&"), nil
-
+	return final, nil
 }
