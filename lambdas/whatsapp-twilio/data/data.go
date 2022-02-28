@@ -65,10 +65,3 @@ func (tr TwilioRequest) ToUrlValues() url.Values {
 
 	return v
 }
-
-type TwilioRequestValidationData struct {
-	HeaderXTwilioSignature string
-	HeaderXHost            string
-	HeaderXPath            string
-	AuthToken              string
-}

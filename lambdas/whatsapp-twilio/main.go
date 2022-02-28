@@ -7,12 +7,11 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/data"
+	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/lambdautils"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/processing"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/security"
 	"github.com/m-to-n/channels-webhook-services/utils"
 	"net/http"
-	"os"
-	"strings"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -60,7 +59,7 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 		return returnError("Error when parsing twilio payload", err, http.StatusBadRequest)
 	}
 
-	twilioAuthToken := os.Getenv("TWILIO_AUTH_TOKEN_" + strings.Split(twilioMessage.To, "+")[1]) // TBD: make more defensive :)
+	twilioAuthToken := lambdautils.GetTwilioAuthKey(&twilioMessage.To)
 
 	err = security.ValidateIncomingRequest(
 		"https://"+req.Headers["host"],
@@ -76,7 +75,7 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 
 	fmt.Println("security check OK, processing now.")
 
-	err = processing.MessageHanler(&twilioMessage)
+	err = processing.MessageHandler(&twilioMessage)
 	if err != nil {
 		return returnError("Error when processing twilio payload", err, http.StatusInternalServerError)
 	}
