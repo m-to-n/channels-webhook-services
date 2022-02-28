@@ -56,15 +56,12 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 
 	fmt.Println("prettyString " + *prettyString)
 
-	//err = json.Unmarshal([]byte(req.Body), &twilioMessage)
-
 	if err != nil {
 		return returnError("Error when parsing twilio payload", err, http.StatusBadRequest)
 	}
 
 	twilioAuthToken := os.Getenv("TWILIO_AUTH_TOKEN_" + strings.Split(twilioMessage.To, "+")[1]) // TBD: make more defensive :)
 
-	// TBD: we will have special service maintaining configs (like TWILIO_AUTH_TOKEN) in multi-tenant way. this if for initial testing only
 	err = security.ValidateIncomingRequest(
 		"https://"+req.Headers["host"],
 		twilioAuthToken,
@@ -76,6 +73,8 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 	if err != nil {
 		return returnError("Invalid security header", err, http.StatusBadRequest)
 	}
+
+	fmt.Println("security check OK, processing now.")
 
 	err = processing.MessageHanler(&twilioMessage)
 	if err != nil {

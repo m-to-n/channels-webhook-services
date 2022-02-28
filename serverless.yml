@@ -25,9 +25,20 @@ provider:
   name: aws
   runtime: go1.x
   region: eu-central-1
-  environment:
-    TWILIO_AUTH_TOKEN_14155238886: ${self:custom.twilio_auth_token_14155238886}
-    SQS_QUEUE_14155238886: ${self:custom.sqs_queue_14155238886}
+  # See:
+  # https://www.serverless.com/framework/docs/providers/aws/guide/iam
+  # https://dynobase.dev/dynamodb-serverless-framework/
+  # for simplicity all lambdas will merge permissions below into default IAM role
+  # to be compliant with principle of least-possible-privilege
+  # we should define separate custom roles for each lambda in the future!
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - sqs:SendMessage
+          Resource:
+            "Fn::GetAtt": [ChlQWATwilio14155238886, Arn]
 
 # you can overwrite defaults here
 #  stage: dev
@@ -69,6 +80,11 @@ functions:
           method: get
   whatsapp-twilio:
     handler: bin/whatsapp-twilio
+    environment:
+      TWILIO_AUTH_TOKEN_14155238886: ${self:custom.twilio_auth_token_14155238886}
+      SQS_QUEUE_NAME_14155238886: ${self:custom.sqs_queue_14155238886}
+      SQS_QUEUE_URL_14155238886:
+        Ref: ChlQWATwilio14155238886
     events:
       - httpApi:
           path: /whatsapp-twilio
@@ -76,6 +92,7 @@ functions:
       - httpApi:
           path: /whatsapp-twilio
           method: get
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -128,3 +145,13 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+resources:
+  Resources:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-sqs-queue.html
+    ChlQWATwilio14155238886:
+      Type: AWS::SQS::Queue
+      Properties:
+        FifoQueue: true
+        MessageRetentionPeriod: 120 # more than 2 mins does not make sense for messaging app
+        QueueName: ${self:custom.sqs_queue_14155238886}
+        ReceiveMessageWaitTimeSeconds: 20 # aka long polling
