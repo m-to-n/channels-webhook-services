@@ -80,9 +80,14 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 		return returnError("Error when processing twilio payload", err, http.StatusInternalServerError)
 	}
 
+	// send empty response. real response will be sent
+	// asynchronously from downstream components
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
-		Body:       "OK!",
+		Headers: map[string]string{
+			"Content-Type": "text/html",
+		},
+		Body: "<Response></Response>",
 	}, nil
 }
 
