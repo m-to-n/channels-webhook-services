@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/awssqs"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/lambdautils"
-	"github.com/m-to-n/channels-webhook-services/utils"
 	whatsapp "github.com/m-to-n/common/channels/whatsapp-twilio"
+	"github.com/m-to-n/common/logging"
 )
 
 func MessageHandler(twilioMessage *whatsapp.TwilioRequest) error {
-	twilioMessageStr, err := utils.StructToString(twilioMessage)
+	twilioMessageStr, err := logging.StructToString(twilioMessage)
 	if err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func MessageHandler(twilioMessage *whatsapp.TwilioRequest) error {
 		return err
 	}
 
-	sendResultStr, err := utils.StructToString(sendResult)
+	sendResultStr, err := logging.StructToString(sendResult)
 	if err != nil {
 		return err
 	}

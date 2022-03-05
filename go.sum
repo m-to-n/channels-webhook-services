@@ -37,6 +37,8 @@ github.com/m-to-n/common v0.0.0-20220305125914-2f3efe23a795 h1:U3jVd279l8iJvwBp8
 github.com/m-to-n/common v0.0.0-20220305125914-2f3efe23a795/go.mod h1:eMtHCJJDQHqZjP2iUylQkoZkIXxe/W2Xb5Gr+a5weZk=
 github.com/m-to-n/common v0.0.0-20220305153729-ddac3f1fc569 h1:uJdmxFB0lX3Pirvl40z8+Ruoy19eDDRDRleLKwLX968=
 github.com/m-to-n/common v0.0.0-20220305153729-ddac3f1fc569/go.mod h1:eMtHCJJDQHqZjP2iUylQkoZkIXxe/W2Xb5Gr+a5weZk=
+github.com/m-to-n/common v0.0.0-20220305174519-de2718f7e26d h1:9Pog3OEZYo8cOkX7dF2zKgk1P6huunS66lWw/svYgPI=
+github.com/m-to-n/common v0.0.0-20220305174519-de2718f7e26d/go.mod h1:eMtHCJJDQHqZjP2iUylQkoZkIXxe/W2Xb5Gr+a5weZk=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=

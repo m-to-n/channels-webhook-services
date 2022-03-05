@@ -11,6 +11,7 @@ import (
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/security"
 	"github.com/m-to-n/channels-webhook-services/utils"
 	whatsapp "github.com/m-to-n/common/channels/whatsapp-twilio"
+	"github.com/m-to-n/common/logging"
 	"net/http"
 )
 
@@ -47,7 +48,7 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 	}
 
 	twilioMessage := whatsapp.TwilioRequestFromArray(paramsArr)
-	prettyString, err := utils.StructToPrettyString(twilioMessage)
+	prettyString, err := logging.StructToPrettyString(twilioMessage)
 
 	if err != nil {
 		return returnError("Error prettyString", err, http.StatusBadRequest)
