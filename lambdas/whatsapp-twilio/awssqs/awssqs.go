@@ -6,8 +6,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/aws/aws-sdk-go-v2/service/sqs/types"
-	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/data"
 	"github.com/m-to-n/channels-webhook-services/utils"
+	whatsapp "github.com/m-to-n/common/channels/whatsapp-twilio"
 )
 
 type SQSSendMessageAPI interface {
@@ -28,7 +28,7 @@ func SendMsg(c context.Context, api SQSSendMessageAPI, input *sqs.SendMessageInp
 	return api.SendMessage(c, input)
 }
 
-func SendChannelMessage(queueURL *string, twilioMessage *data.TwilioRequest) (*sqs.SendMessageOutput, error) {
+func SendChannelMessage(queueURL *string, twilioMessage *whatsapp.TwilioRequest) (*sqs.SendMessageOutput, error) {
 
 	twilioMessageStr, err := utils.StructToString(twilioMessage)
 	if err != nil {

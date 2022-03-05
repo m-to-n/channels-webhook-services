@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/data"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/lambdautils"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/processing"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/security"
 	"github.com/m-to-n/channels-webhook-services/utils"
+	whatsapp "github.com/m-to-n/common/channels/whatsapp-twilio"
 	"net/http"
 )
 
@@ -46,7 +46,7 @@ func handlerPost(ctx context.Context, req events.APIGatewayProxyRequest) (events
 		return returnError("Error when parsing rawDecodedStr", err, http.StatusBadRequest)
 	}
 
-	twilioMessage := data.TwilioRequestFromArray(paramsArr)
+	twilioMessage := whatsapp.TwilioRequestFromArray(paramsArr)
 	prettyString, err := utils.StructToPrettyString(twilioMessage)
 
 	if err != nil {

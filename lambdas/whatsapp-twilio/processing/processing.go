@@ -3,12 +3,12 @@ package processing
 import (
 	"fmt"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/awssqs"
-	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/data"
 	"github.com/m-to-n/channels-webhook-services/lambdas/whatsapp-twilio/lambdautils"
 	"github.com/m-to-n/channels-webhook-services/utils"
+	whatsapp "github.com/m-to-n/common/channels/whatsapp-twilio"
 )
 
-func MessageHandler(twilioMessage *data.TwilioRequest) error {
+func MessageHandler(twilioMessage *whatsapp.TwilioRequest) error {
 	twilioMessageStr, err := utils.StructToString(twilioMessage)
 	if err != nil {
 		return err
